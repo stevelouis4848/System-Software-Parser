@@ -6,6 +6,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 
+FILE *ifp,ofp;
+char token[1024];
+
+ifp = fopen(".txt","r");
+	
 
 int main(){
 	
@@ -15,15 +20,21 @@ int main(){
 
 
 
-	ifp = fopen(,"r");
-	ofp = fopen(,"w");
+	ifp = fopen(".txt","r");
+	ofp = fopen(".txt","w");
+
+
+
 	
 	
 }
 
-int getToken(){
+char* getToken(){
 
 
+	fscanf(ifp, "%s", token)
+	
+	return Token;
 }
 
 void Block(){
