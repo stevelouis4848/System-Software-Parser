@@ -7,10 +7,37 @@
 # include <stdlib.h>
 
 
-int main(void){
+int main(){
 	
-	
-	
+	int i;
+	FILE *ifp,ofp;
+
+
+
+
+	ifp = fopen(,"r");
+	ofp = fopen(,"w");
 	
 	
 }
+
+int getToken(){
+
+
+}
+
+void Block(){
+
+
+}
+
+void statements(){}
+
+
+void condition(){}
+
+void expression(){}
+
+void term(){}
+
+void factor(){}
