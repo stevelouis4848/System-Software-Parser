@@ -7,16 +7,16 @@
 # include <stdlib.h>
 
 int const MAX_NUM_TOKENS = 500;
-int const TOKEN_LENGTH = 11;
+int const MAX_TOKEN_LENGTH = 11;
 	
 typedef enum{
-				nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
-				 multsym = 6,  slashsym = 7, oddsym = 8,  eqlsym = 9, neqsym = 10, 
-				 lessym = 11, leqsym = 12, 	gtrsym = 13, geqsym = 14, lparentsym = 15, 
-				 rparentsym = 16, commasym = 17, semicolonsym = 18, periodsym = 19, 
-				 becomessym = 20, beginsym = 21, endsym = 22, ifsym = 23, thensym = 24,
-				  whilesym = 25, dosym = 26, callsym = 27, constsym = 28, varsym = 29, 
-				  procsym = 30, writesym = 31, readsym = 32, elsesym = 33
+				nulsym = 1, identsym , numbersym, plussym, minussym,
+				 multsym,  slashsym, oddsym,  eqlsym, neqsym, 
+				 lessym, leqsym, 	gtrsym, geqsym, lparentsym, 
+				 rparentsym, commasym, semicolonsym, periodsym, 
+				 becomessym, beginsym, endsym, ifsym, thensym,
+				  whilesym, dosym, callsym, constsym, varsym, 
+				  procsym, writesym, readsym, elsesym
 }tokenNames;
 
 
@@ -28,10 +28,19 @@ typedef struct token{
 
 typedef struct enviroment{
 
-				token thisToken;
-				int currentIndex;
-				int arrayLength;
+				token thisToken[MAX_NUM_TOKENS];
+				symbolTable thisSymbolTable[MAX_NUM_TOKENS];
+				int currentIndexToken = 0;
+				int currentIndexTable = 0;
+				int arrayLength = MAX_NUM_TOKENS;
 }token;
+
+typedef struct symbolTable{
+
+							int type;
+							char name[MAX_TOKEN_LENGTH];
+							int value;
+}
 
 void readFile(){
 
@@ -45,41 +54,79 @@ void readFile(){
 
 	printf("fileName:%s\n",fileName);
 
-	enviroment = malloc(500 * sizeof(token));
-
-	thisEnviroment->arrayLength = MAX_NUM_TOKENS;
-	thisEnviroment->currentIndex = 0;
-
+	enviroment = malloc(sizeof(enviroment));
 
 	for(i = 0; fscanf(ifp, "%s", buffer) != EOF; i++){
 		
 		printf("buffer: %s\n", buffer);
 
 		buffer2 = atoi(buffer);
-		thisEnviroment[i]->thisToken.type = buffer;
+		thisEnviroment->thisToken[i]->type = buffer;
 
 		if(buffer2 == 2 || buffer == 3){
 
 			fscanf(ifp, "%s", buffer);
-			strcopy(thisEnviroment[i]-> = thisToken.value, buffer);
+			strcopy(thisEnviroment-> = thisToken[i]->value, buffer);
 	}
 
-	block();		
+	block(thisEnviroment);		
 }
 
-char* getToken(enviroment *thisEnviroment){
+token *getToken(enviroment *thisEnviroment){
 
-	token = thisEnviroment->
+	thisEnviroment->currentIndexToken++;
 
-	return Token;
+	return thisEnviroment->thisToken[(thisEnviroment->currentIndexToken - 1)];
 }
 
-void Block(){
+void Block(enviroment *thisEnviroment){
 
+	token tokenHolder = getToken(thisEnviroment);
 
+	switch(tokenHolder->type){
+
+		case(constsym):
+			do{
+				tokenHolder = getToken(thisEnviroment);
+				if(tokenHolder->type != identsym){
+					error(4);
+				}
+
+				tokenHolder = getToken(thisEnviroment);
+				if(tokenHolder->type != eqlsym){
+					error(3);
+				}
+
+				tokenHolder = getToken(thisEnviroment);
+				if(tokenHolder->type != numbersym){
+					error(2);
+				}
+
+			} while(tokenHolder->type == commasym);
+
+			tokenHolder = getToken(thisEnviroment);
+
+			if(tokenHolder->type != semicolonsym){
+				error(5);
+			}
+		break;
+		case(identsym):
+
+			do{
+				tokenHolder = getToken(thisEnviroment);
+			}while(token == commasym);
+
+			tokenHolder = getToken(thisEnviroment);
+			if(tokenHolder->type != semicolonsym){
+				error(5);
+			}
+	}
+
+	statement();
 }
 
-void statements(){}
+
+void statement(){}
 
 
 void condition(){}
@@ -89,3 +136,144 @@ void expression(){}
 void term(){}
 
 void factor(){}
+
+void error(int errorCode){
+
+	switch(errorCode){
+
+		case 1:
+			printf("Use = instead of :=.\n");
+			exit(0);
+		break;
+		case 2:
+			printf("= must be followed by a number.\n");
+			exit(0);
+		break;
+		case 3:
+			printf("Identifier must be followed by =.\n");
+			exit(0);
+		break;
+		case 4:
+			printf("const, var, procedure must be followed by identifier.\n");
+			exit(0);
+		break;
+		case 5:
+			printf("semicolon or comma missing.\n");
+			exit(0);
+		break;
+		case 6:
+			printf("Incorrect symbol after procedure decleration.\n");
+			exit(0);
+		break;
+		case 7:
+			printf("Statement expected.\n");
+			exit(0);
+		break;
+		case 8:
+			printf("Incorrect symbol after statement part in block.\n");
+			exit(0);
+		break;
+		case 9:
+			printf("Period expected.\n");		
+			exit(0);
+		break;
+		case 10:
+			printf("semicolon between statements missing.\n");
+			exit(0);
+		break;
+		case 11:
+			printf("Undeclared identifier.\n");
+			exit(0);
+		break;
+		case 12:
+			printf("Assignment to constant or procedure is not allowed.\n");
+			exit(0);
+		break;
+		case 13:
+			printf("Assignment operator expected.\n");
+			exit(0);
+		break;
+		case 14:
+			printf("call must be folowed by an identifier.\n");
+			exit(0);
+		break;
+
+		case 15:
+			printf("call of a constant or variable is meaningless.\n");
+			exit(0);
+		break;
+		case 16:
+			printf("then exoected.\n");
+			exit(0);
+		break;
+		case 17:
+			printf("semicolon or } expected.\n");
+			exit(0);
+		break;
+
+		case 18:
+			printf("do expected.\n");
+			exit(0);
+		break;
+		case 19:
+			printf("Incorrect symbol following statement.\n");
+			exit(0);
+		break;
+		case 20:
+			printf("Relational operator expected.\n");
+			exit(0);
+		break;
+
+		case 21:
+			printf("Expression must no contain a procedure identi.\n");
+			exit(0);
+		break;
+		case 22:
+			printf("Right parantheses missing.\n");
+			exit(0);
+		break;
+
+		case 23:
+			printf("The preceding factor cannot begin with this symbol.\n");
+			exit(0);
+		break;
+		case 24:
+			printf("An expression cannot begin with this symbol.\n");
+			exit(0);
+		break;
+		case 25:
+			printf("This number is too large.\n");
+			exit(0);
+		break;
+		case 26:
+			printf("Identifier too long.\n");
+			exit(0);
+		break;
+		case 27:
+			printf("Invalid symbol.\n");
+			exit(0);
+		break;
+	}
+}
+
+void symbolTable(enviroment *thisEnviroment, int op, int index){
+
+	switch(op){
+
+		case 1:
+
+			strcopy(thisEnviroment->thisToken[currentIndexToken]->name, thisEnviroment->thisSymbolTable[thisEnviroment->currentIndexTable].name);
+
+		break;
+		case 2:
+			thisEnviroment->thisSymbolTable[currentIndexTable].type = thisEnviroment->thisToken[currentIndexToken].type
+			thisEnviroment->thisSymbolTable[currentIndexTable].value = thisEnviroment->thisToken[currentIndexToken].vlaue
+
+		break;
+		case 3:
+		break;
+		case 4:
+		break;
+	}
+
+}
