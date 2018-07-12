@@ -158,20 +158,99 @@ void statement(){
 
 				/*error(9);*/
 			}
+		case(ifsym):
+			tokenHolder = getToken(thisEnviroment);
+			condition();
 
+			tokenHolder = getToken(thisEnviroment);
+			if(tokenHolder != thensym){
 
+				error(16);
+			}
+			tokenHolder = getToken(thisEnviroment);
+			statement();
+		break;
+		case(whilesym):
+			tokenHolder = getToken(thisEnviroment);
 
+			condition();
 
+			if(token != dosym){
+				error(18);
+			} 
+
+			tokenHolder = getToken(thisEnviroment);
+			statement();
+		break;
 }
 
+void condition(){
 
-void condition(){}
+	token tokenHolder = getToken(thisEnviroment);
 
-void expression(){}
+	switch(tokenHolder->type){
 
-void term(){}
+		case(oddsym):
+			
+			tokenHolder = getToken(thisEnviroment);
+			expression();
+		break;
+		default:
+			expression();
+			if((token != eqlsym) && (token != neqsym) && (token != lessym) &&
+				 (token != leqsym) && (token != gtrsym) && (token != geqsym) ){
+				error(20);
+			}
+		tokenHolder = getToken(thisEnviroment);
+		expression();			
+	}
 
-void factor(){}
+	statement();
+}
+
+void expression(){
+
+	tokenHolder = getToken(thisEnviroment);
+
+	while(tokenHolder == plussym || tokenHolder == minussym){
+		term();
+	}
+}	
+
+void term(){
+
+	tokenHolder = getToken(thisEnviroment);
+	factor();
+
+	tokenHolder = getToken(thisEnviroment);
+	while(tokenHolder == multsym || tokenHolder == slashsym){
+		factor();
+	}
+}
+
+void factor(){
+
+	tokenHolder = getToken(thisEnviroment);
+	
+	if(tokenHolder == identsym || tokenHolder == numbersym){
+
+		return;
+	}
+
+	else if(tokenHolder == lparentsym){
+
+		expression();
+		
+		if(tokenHolder != rparentsym){
+		error(22);
+	}
+
+	else{
+
+		error();
+	}
+
+}
 
 void error(int errorCode){
 
