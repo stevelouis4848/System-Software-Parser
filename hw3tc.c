@@ -126,7 +126,43 @@ void Block(enviroment *thisEnviroment){
 }
 
 
-void statement(){}
+void statement(){
+
+
+	token tokenHolder = getToken(thisEnviroment);
+
+	switch(tokenHolder->type){
+
+		case(identsym):
+	
+			tokenHolder = getToken(thisEnviroment);
+			if(tokenHolder->type != becomessym){
+				/*error(3);*/
+			}
+			expression();
+			} 
+		break;
+		case(beginsym):
+
+			
+				statement();
+
+			while(token == semicolonsym){
+
+				tokenHolder = getToken(thisEnviroment);
+				statement();
+			}
+			tokenHolder = getToken(thisEnviroment);
+
+			if(token != endsym){
+
+				/*error(9);*/
+			}
+
+
+
+
+}
 
 
 void condition(){}
