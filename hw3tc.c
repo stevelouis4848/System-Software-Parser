@@ -37,12 +37,15 @@ typedef struct enviroment{
 
 typedef struct symbolTable{
 
+							int stackPointer;
 							int type;
 							char name[MAX_TOKEN_LENGTH];
 							int value;
+							int adress;
+
 }
 
-void readFile(){
+void readFile(enviroment *thisEnviroment, FILE *ofp){
 
 	int i;
 	char buffer[MAX_NUM_TOKENS];
@@ -102,6 +105,11 @@ void Block(enviroment *thisEnviroment){
 					error(2);
 				}
 
+				//generates Lit for code  generation OP L M R
+				symbolTablePush(enviroment *thisEnviroment);
+				printfCodeGeneration(thisEnvirment, ofp);
+
+
 			} while(tokenHolder->type == commasym);
 
 			tokenHolder = getToken(thisEnviroment);
@@ -122,11 +130,11 @@ void Block(enviroment *thisEnviroment){
 			}
 	}
 
-	statement();
+	statement(thisEnvirment, ofp);
 }
 
 
-void statement(){
+void statement(enviroment *thisEnviroment, FILE *ofp){
 
 
 	token tokenHolder = getToken(thisEnviroment);
@@ -139,18 +147,18 @@ void statement(){
 			if(tokenHolder->type != becomessym){
 				/*error(3);*/
 			}
-			expression();
+			expression(thisEnvirment, ofp);
 			} 
 		break;
 		case(beginsym):
 
 			
-				statement();
+				statement(thisEnvirment, ofp);
 
 			while(token == semicolonsym){
 
 				tokenHolder = getToken(thisEnviroment);
-				statement();
+				statement(thisEnvirment, ofp);
 			}
 			tokenHolder = getToken(thisEnviroment);
 
@@ -160,7 +168,7 @@ void statement(){
 			}
 		case(ifsym):
 			tokenHolder = getToken(thisEnviroment);
-			condition();
+			condition(thisEnvirment, ofp);
 
 			tokenHolder = getToken(thisEnviroment);
 			if(tokenHolder != thensym){
@@ -168,23 +176,23 @@ void statement(){
 				error(16);
 			}
 			tokenHolder = getToken(thisEnviroment);
-			statement();
+			statement(thisEnvirment, ofp);
 		break;
 		case(whilesym):
 			tokenHolder = getToken(thisEnviroment);
 
-			condition();
+			condition(thisEnvirment, ofp);
 
 			if(token != dosym){
 				error(18);
 			} 
 
 			tokenHolder = getToken(thisEnviroment);
-			statement();
+			statement(thisEnvirment, ofp);
 		break;
 }
 
-void condition(){
+void condition(enviroment *thisEnviroment, FILE *ofp){
 
 	token tokenHolder = getToken(thisEnviroment);
 
@@ -193,42 +201,42 @@ void condition(){
 		case(oddsym):
 			
 			tokenHolder = getToken(thisEnviroment);
-			expression();
+			expression(thisEnvirment, ofp);
 		break;
 		default:
-			expression();
+			expression(thisEnvirment, ofp);
 			if((token != eqlsym) && (token != neqsym) && (token != lessym) &&
 				 (token != leqsym) && (token != gtrsym) && (token != geqsym) ){
 				error(20);
 			}
 		tokenHolder = getToken(thisEnviroment);
-		expression();			
+		expression(thisEnvirment, ofp);			
 	}
 
-	statement();
+	statement(thisEnvirment, ofp);
 }
 
-void expression(){
+void expression(enviroment *thisEnviroment, FILE *ofp){
 
 	tokenHolder = getToken(thisEnviroment);
 
 	while(tokenHolder == plussym || tokenHolder == minussym){
-		term();
+		term(thisEnvirment, ofp);
 	}
 }	
 
-void term(){
+void term(enviroment *thisEnviroment, FILE *ofp){
 
 	tokenHolder = getToken(thisEnviroment);
-	factor();
+	factor(thisEnvirment, ofp);
 
 	tokenHolder = getToken(thisEnviroment);
 	while(tokenHolder == multsym || tokenHolder == slashsym){
-		factor();
+		factor(thisEnvirment, ofp);
 	}
 }
 
-void factor(){
+void factor(enviroment *thisEnviroment, FILE *ofp){
 
 	tokenHolder = getToken(thisEnviroment);
 	
@@ -239,7 +247,7 @@ void factor(){
 
 	else if(tokenHolder == lparentsym){
 
-		expression();
+		expression(thisEnvirment, ofp);
 		
 		if(tokenHolder != rparentsym){
 		error(22);
@@ -247,7 +255,7 @@ void factor(){
 
 	else{
 
-		error();
+		error(thisEnvirment, ofp);
 	}
 
 }
@@ -371,24 +379,28 @@ void error(int errorCode){
 	}
 }
 
-void symbolTable(enviroment *thisEnviroment, int op, int index){
+void symbolTablePush(enviroment *thisEnviroment){
 
-	switch(op){
 
-		case 1:
-
+			thisEnviroment->thisSymbolTable->stackPointer = thisEnviroment->currentIndexTable;
 			strcopy(thisEnviroment->thisToken[currentIndexToken]->name, thisEnviroment->thisSymbolTable[thisEnviroment->currentIndexTable].name);
+			thisEnviroment->currentIndexTable++;
+			thisEnviroment->thisSymbolTable[currentIndexTable].type = thisEnviroment->thisToken[currentIndexToken].type;
+			thisEnviroment->thisSymbolTable[currentIndexTable].value = thisEnviroment->thisToken[currentIndexToken].vlaue;
 
-		break;
-		case 2:
-			thisEnviroment->thisSymbolTable[currentIndexTable].type = thisEnviroment->thisToken[currentIndexToken].type
-			thisEnviroment->thisSymbolTable[currentIndexTable].value = thisEnviroment->thisToken[currentIndexToken].vlaue
+}
+void symbolTableLookUp(enviroment *thisEnviroment){
 
-		break;
-		case 3:
-		break;
-		case 4:
-		break;
-	}
+
+			thisEnviroment->thisSymbolTable->stackPointer = thisEnviroment->currentIndexTable;
+			strcopy(thisEnviroment->thisToken[currentIndexToken]->name, thisEnviroment->thisSymbolTable[thisEnviroment->currentIndexTable].name);
+			thisEnviroment->currentIndexTable++;
+			thisEnviroment->thisSymbolTable[currentIndexTable].type = thisEnviroment->thisToken[currentIndexToken].type;
+			thisEnviroment->thisSymbolTable[currentIndexTable].value = thisEnviroment->thisToken[currentIndexToken].vlaue;
+
+}
+void printfCodeGeneration(int op, int l, int m, int r, FILE* ofp){
+
+	FIl
 
 }
