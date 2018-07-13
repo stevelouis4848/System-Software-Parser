@@ -5,6 +5,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+#include"compiler.c"
 
 int const MAX_NUM_TOKENS = 500;
 int const MAX_TOKEN_LENGTH = 11;
