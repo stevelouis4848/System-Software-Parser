@@ -6,8 +6,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-int const MAX_NUM_TOKENS = 500;
-int const MAX_TOKEN_LENGTH = 11;
+const int MAX_NUM_TOKENS = 500;
+const int MAX_TOKEN_LENGTH = 11;
 	
 typedef enum{
 				nulsym = 1, identsym , numbersym, plussym, minussym,
@@ -23,56 +23,58 @@ typedef enum{
 typedef struct token{
 
 				int type;
-				char value[MAX_NUM_TOKENS];
+				char *value;
 }token;
 
 typedef struct enviroment{
 
-				token thisToken[MAX_NUM_TOKENS];
-				symbolTable thisSymbolTable[MAX_NUM_TOKENS];
-				int currentIndexToken = 0;
-				int currentIndexTable = 0;
-				int arrayLength = MAX_NUM_TOKENS;
-}token;
+				token *thisToken;
+				int currentIndexToken;
+				int arrayLength;
+}enviroment;
 
-typedef struct symbolTable{
+void condition(enviroment *thisEnviroment, FILE *ofp);
+void block(enviroment *thisEnviroment, FILE *ofp);
+token *getToken(enviroment *thisEnviroment);
+void statement(enviroment *thisEnviroment, FILE *ofp);
+void condition(enviroment *thisEnviroment, FILE *ofp);
+void expression(enviroment *thisEnviroment, FILE *ofp);
+void term(enviroment *thisEnviroment, FILE *ofp);
+void factor(enviroment *thisEnviroment, FILE *ofp);
+void error(int errorCode, FILE *ofp);
 
-							int stackPointer;
-							int type;
-							char name[MAX_TOKEN_LENGTH];
-							int value;
-							int adress;
 
-}
-
-void readFile(enviroment *thisEnviroment, FILE *ofp){
+void readFILE(){
 
 	int i;
 	char buffer[MAX_NUM_TOKENS];
 	int buffer2;
 	enviroment *thisEnviroment;
 
-	FILE * ifp;
- 	ifp = fopen("","r");
+	FILE *ifp, *ofp;
+ 	ifp = fopen("parserInput.txt","r");
+ 	ofp = fopen("parserOutput.txt", "w")
 
-	printf("fileName:%s\n",fileName);
-
-	enviroment = malloc(sizeof(enviroment));
+	thisEnviroment = malloc(sizeof(enviroment));
+	thisEnviroment->thisToken = malloc(sizeof (token));
+	thisEnviroment->currentIndexToken = 0;
+	thisEnviroment->arrayLength = MAX_NUM_TOKENS;
 
 	for(i = 0; fscanf(ifp, "%s", buffer) != EOF; i++){
 		
 		printf("buffer: %s\n", buffer);
 
 		buffer2 = atoi(buffer);
-		thisEnviroment->thisToken[i]->type = buffer;
+		thisEnviroment->thisToken[i].type = buffer;
 
-		if(buffer2 == 2 || buffer == 3){
+		if(buffer2 == 2 || buffer2 == 3){
 
 			fscanf(ifp, "%s", buffer);
-			strcopy(thisEnviroment-> = thisToken[i]->value, buffer);
+			strcopy(thisEnviroment->thisToken[i].value, buffer);
+		}
 	}
 
-	block(thisEnviroment);		
+	block(thisEnviroment, ofp);		
 }
 
 token *getToken(enviroment *thisEnviroment){
@@ -82,9 +84,9 @@ token *getToken(enviroment *thisEnviroment){
 	return thisEnviroment->thisToken[(thisEnviroment->currentIndexToken - 1)];
 }
 
-void Block(enviroment *thisEnviroment){
+void block(enviroment *thisEnviroment, FILE *ofp){
 
-	token tokenHolder = getToken(thisEnviroment);
+	token *tokenHolder = getToken(thisEnviroment);
 
 	switch(tokenHolder->type){
 
@@ -92,17 +94,17 @@ void Block(enviroment *thisEnviroment){
 			do{
 				tokenHolder = getToken(thisEnviroment);
 				if(tokenHolder->type != identsym){
-					error(4);
+					error(4, ofp);
 				}
 
 				tokenHolder = getToken(thisEnviroment);
 				if(tokenHolder->type != eqlsym){
-					error(3);
+					error(3, ofp);
 				}
 
 				tokenHolder = getToken(thisEnviroment);
 				if(tokenHolder->type != numbersym){
-					error(2);
+					error(2, ofp);
 				}
 				
 
@@ -111,29 +113,29 @@ void Block(enviroment *thisEnviroment){
 			tokenHolder = getToken(thisEnviroment);
 
 			if(tokenHolder->type != semicolonsym){
-				error(5);
+				error(5, ofp);
 			}
 		break;
 		case(identsym):
 
 			do{
 				tokenHolder = getToken(thisEnviroment);
-			}while(token == commasym);
+			}while(tokenHolder->type == commasym);
 
 			tokenHolder = getToken(thisEnviroment);
 			if(tokenHolder->type != semicolonsym){
-				error(5);
+				error(5, ofp);
 			}
 	}
 
-	statement(thisEnvirment, ofp);
+	statement(thisEnviroment, ofp);
 }
 
 
 void statement(enviroment *thisEnviroment, FILE *ofp){
 
 
-	token tokenHolder = getToken(thisEnviroment);
+	token *tokenHolder = getToken(thisEnviroment);
 
 	switch(tokenHolder->type){
 
@@ -143,120 +145,120 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			if(tokenHolder->type != becomessym){
 				/*error(3);*/
 			}
-			expression(thisEnvirment, ofp);
-			} 
+			expression(thisEnviroment, ofp);
 		break;
 		case(beginsym):
 
 			
-				statement(thisEnvirment, ofp);
+				statement(thisEnviroment, ofp);
 
-			while(token == semicolonsym){
+			while(tokenHolder->type == semicolonsym){
 
 				tokenHolder = getToken(thisEnviroment);
-				statement(thisEnvirment, ofp);
+				statement(thisEnviroment, ofp);
 			}
 			tokenHolder = getToken(thisEnviroment);
 
-			if(token != endsym){
+			if(tokenHolder->type != endsym){
 
 				/*error(9);*/
 			}
 		case(ifsym):
 			tokenHolder = getToken(thisEnviroment);
-			condition(thisEnvirment, ofp);
+			condition(thisEnviroment, ofp);
 
 			tokenHolder = getToken(thisEnviroment);
-			if(tokenHolder != thensym){
+			if(tokenHolder->type != thensym){
 
-				error(16);
+				error(16, ofp);
 			}
 			tokenHolder = getToken(thisEnviroment);
-			statement(thisEnvirment, ofp);
+			statement(thisEnviroment, ofp);
 		break;
 		case(whilesym):
 			tokenHolder = getToken(thisEnviroment);
 
-			condition(thisEnvirment, ofp);
+			condition(thisEnviroment, ofp);
 
-			if(token != dosym){
-				error(18);
+			if(tokenHolder->type != dosym){
+				error(18, ofp);
 			} 
 
 			tokenHolder = getToken(thisEnviroment);
-			statement(thisEnvirment, ofp);
+			statement(thisEnviroment, ofp);
 		break;
+	}
 }
 
 void condition(enviroment *thisEnviroment, FILE *ofp){
 
-	token tokenHolder = getToken(thisEnviroment);
+	token *tokenHolder = getToken(thisEnviroment);
 
 	switch(tokenHolder->type){
 
 		case(oddsym):
 			
 			tokenHolder = getToken(thisEnviroment);
-			expression(thisEnvirment, ofp);
+			expression(thisEnviroment, ofp);
 		break;
 		default:
-			expression(thisEnvirment, ofp);
-			if((token != eqlsym) && (token != neqsym) && (token != lessym) &&
-				 (token != leqsym) && (token != gtrsym) && (token != geqsym) ){
-				error(20);
+			expression(thisEnviroment, ofp);
+			if((tokenHolder->type != eqlsym) && (tokenHolder->type != neqsym) && (tokenHolder->type != lessym) &&
+				 (tokenHolder->type != leqsym) && (tokenHolder->type != gtrsym) && (tokenHolder->type != geqsym)){
+				error(20, ofp);
 			}
 		tokenHolder = getToken(thisEnviroment);
-		expression(thisEnvirment, ofp);			
+		expression(thisEnviroment, ofp);			
 	}
 
-	statement(thisEnvirment, ofp);
+	statement(thisEnviroment, ofp);
 }
 
 void expression(enviroment *thisEnviroment, FILE *ofp){
 
-	tokenHolder = getToken(thisEnviroment);
+	token *tokenHolder = getToken(thisEnviroment);
 
-	while(tokenHolder == plussym || tokenHolder == minussym){
-		term(thisEnvirment, ofp);
+	while(tokenHolder->type == plussym || tokenHolder->type == minussym){
+		term(thisEnviroment, ofp);
 	}
 }	
 
 void term(enviroment *thisEnviroment, FILE *ofp){
 
-	tokenHolder = getToken(thisEnviroment);
-	factor(thisEnvirment, ofp);
+	token *tokenHolder = getToken(thisEnviroment);
+	factor(thisEnviroment, ofp);
 
 	tokenHolder = getToken(thisEnviroment);
-	while(tokenHolder == multsym || tokenHolder == slashsym){
-		factor(thisEnvirment, ofp);
+	while(tokenHolder->type == multsym || tokenHolder->type == slashsym){
+		factor(thisEnviroment, ofp);
 	}
 }
 
 void factor(enviroment *thisEnviroment, FILE *ofp){
 
-	tokenHolder = getToken(thisEnviroment);
+	token *tokenHolder = getToken(thisEnviroment);
 	
-	if(tokenHolder == identsym || tokenHolder == numbersym){
+	if(tokenHolder->type == identsym || tokenHolder->type == numbersym){
 
 		return;
 	}
 
-	else if(tokenHolder == lparentsym){
+	else if(tokenHolder->type == lparentsym){
 
-		expression(thisEnvirment, ofp);
+		expression(thisEnviroment, ofp);
 		
-		if(tokenHolder != rparentsym){
-		error(22);
+		if(tokenHolder->type != rparentsym){
+		error(22, ofp);
+		}
 	}
-
 	else{
 
-		error(thisEnvirment, ofp);
+		error(1, ofp);
 	}
 
 }
 
-void error(int errorCode){
+void error(int errorCode,FILE *ofp){
 
 	switch(errorCode){
 
