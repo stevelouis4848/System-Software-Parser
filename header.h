@@ -56,10 +56,10 @@ typedef struct enviroment{
 
 				token *thisToken;
 				symbol *thisSymbol;
-				int *vmCode
+				int *vmCode;
 				int currentIndexToken;
 				int currentIndexSymbol;
-				int currenRegister;
+				int currentIndexRegister;
 				int currentIndexCode;
 }enviroment;
 							
@@ -95,8 +95,8 @@ void expression(enviroment *thisEnviroment, FILE *ofp);
 void term(enviroment *thisEnviroment, FILE *ofp);
 void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
-void symbolTablePush(enviroment *thisEnviroment, );
-void symbolTableSearch(enviroment *thisEnviroment, );
+void symbolTablePush(int type, enviroment *thisEnviroment);
+int symbolTableSearch(enviroment *thisEnviroment,char name[10]);
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
