@@ -267,6 +267,7 @@ void scanner(char *fileName){
 	
 	if(fileName == NULL){
 		
+		printf("Invalid file name");
 		fprintf(ofp,"Invalid file name");
 		exit(0);			
 	}
@@ -274,6 +275,14 @@ void scanner(char *fileName){
 	inputHead = malloc(sizeof(listyString));
 		
 	ifp = fopen(fileName,"r");
+
+	if(ifp == NULL){
+		
+		printf("Invalid file name");
+		fprintf(ofp,"Invalid file name");
+		exit(0);			
+	}
+
 	ofp = fopen("lexicalOutput.txt","w");
 	ofp2 = fopen("outputFile2.txt","w");
 	ofp3 = fopen("parserInput.txt","w");
