@@ -4,16 +4,19 @@ void codeGeneration(int type, enviroment *thisEnviroment){
 
 		if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 1){
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 1;
+
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr;
+
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
 		}
 		else if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 2){
 
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 4;
-		}
-
-		thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisSymbol[thisEnviroment->currentIndexSymbol].addr;
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr;
 		
 		thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
-
+		}
 
 	]
 
