@@ -331,20 +331,22 @@ void scanner(char *fileName){
 				fprintf(ofp,"%c",buffer);				
 		}
 		fprintf(ofp,"\n");	
-		fclose(ofp);
-		
-		ofp = fopen("lexicalOutput.txt", "r");
+			
+		if(lexicalPrint != 0){
+			fclose(ofp);
+			ofp = fopen("lexicalOutput.txt", "r");
 
-			while((buffer = fgetc(ofp)) != EOF){
-						
-					printf("%c",buffer);			
-			}
+				while((buffer = fgetc(ofp)) != EOF){
+							
+						printf("%c",buffer);			
+				}
+		}
 	}
 	
 	else{
+
 		fclose(ifp);
 		fclose(ofp);
-		fclose(ofp3);
 		remove("lexicalOutput.txt");
 		remove("parserInput.txt");
 		
@@ -354,16 +356,31 @@ void scanner(char *fileName){
 		ifp = fopen(fileName,"r");
 		
 		fprintf(ofp, "Source Program:%s\n",fileName);
-		printf("Source Program:%s\n",fileName);
-		
-		
+
 		while((buffer = fgetc(ifp)) != EOF){		
 				
-		fprintf(ofp, "%c", buffer);
-		printf("%c",buffer);
+			fprintf(ofp, "%c", buffer);
 		}
-		printf("\nError: Invalid symbol.");
+
 		fprintf(ofp,"\nError: Invalid symbol.");
+
+		if(lexicalPrint != 0){
+			fclose(ofp);
+			ofp = fopen("lexicalOutput.txt", "r");
+
+				while((buffer = fgetc(ofp)) != EOF){
+							
+						printf("%c",buffer);			
+				}
+		}
+		fclose(ifp);
+		fclose(ofp);
+		fclose(ofp2);
+		fclose(ofp3);
+		remove("parserInput.txt");
+		remove("outputFile2.txt");
+	exit(0);
+
 	}
 	
 	fclose(ifp);

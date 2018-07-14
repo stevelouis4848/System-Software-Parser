@@ -7,6 +7,9 @@ int IDENTIFIER_MAX_LENGTH = 11;
 int NUMBER_MAX_LENGTH = 5;
 int TABLE_SIZE = 34;
 int error_halt = 0;
+int lexicalPrint= 0;
+int parserPrint = 0;
+int vmPrint = 0;
 
 typedef struct listyString{
 							int c;
