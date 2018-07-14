@@ -1,3 +1,43 @@
+void codeGeneration(int type, enviroment *thisEnviroment){
+
+	if(type == 0){
+
+		if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 1){
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 1;
+		}
+		else if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 2){
+
+			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 4;
+		}
+
+		thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisSymbol[thisEnviroment->currentIndexSymbol].addr;
+		
+		thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
+
+
+	]
+
+	
+
+}
+void symbolTablePush(enviroment *thisEnviroment){
+
+	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind = symbolHolder.kind;
+	sytcpy(symbolHolder.name, thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].name);
+	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].value = symbolHolder.value;
+	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level = 0;
+	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr = thisEnviroment->currentRegister;
+	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].mark = 0; 
+
+	codeGeneration(O, thisEnviroment);
+	isEnviroment->currentIndexSymbol;
+	thisEnviroment->currentRegister ++;
+}
+
+void symbolTableSearch(enviroment *thisEnviroment,int type, char value[10]){
+
+}
+
 void error(int errorCode,FILE *ofp){
 
 	printf("error\n");
@@ -262,11 +302,15 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 	switch(tokenHolder.type){
 
 		case(constsym):
+
+			symbolHolder.kind = 1;
+
 			do{
 				tokenHolder = getToken(thisEnviroment);
 				if(tokenHolder.type != identsym){
 					error(4, ofp);
 				}
+				strcpy(tokenHolder.value,symbolHolder.name);
 
 				tokenHolder = getToken(thisEnviroment);
 				if(tokenHolder.type != eqlsym){
@@ -277,8 +321,10 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 				if(tokenHolder.type != numbersym){
 					error(2, ofp);
 				}
-				
+				symbolHolder.value = atoi(tokenHolder.value)
 
+				symbolTablePush(thisEnviroment, symbolHolder);
+				
 			} while(tokenHolder.type == commasym);
 
 			tokenHolder = getToken(thisEnviroment);
@@ -311,8 +357,8 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 
 token getToken(enviroment *thisEnviroment){
 
-	tokenHolder = thisEnviroment->thisToken[thisEnviroment->currentIndexToken];
-	thisEnviroment->currentIndexToken++;
+	tokenHolder = thisEnviroment->thisToken[thisEnviroment->currentIndexToken++];
+	//thisEnviroment->currentIndexToken++;
 
 	printf("getToken:\nToken:%d value:%s \n",tokenHolder.type, tokenHolder.value);
 
@@ -333,8 +379,12 @@ void program(){
 
 	thisEnviroment = malloc(sizeof(enviroment));
 	thisEnviroment->thisToken = malloc(MAX_NUM_TOKENS * sizeof (token));
+	thisEnviroment->thisSymbol = malloc(MAX_SYMBOL_TABLE_SIZE * sizeof (symbol));
+	thisEnviroment->vmCode = malloc((MAX_SYMBOL_TABLE_SIZE * 4) * sizeof (int));
 	thisEnviroment->currentIndexToken = 0;
-	thisEnviroment->arrayLength = MAX_NUM_TOKENS;
+	thisEnviroment->currentIndexSymbol = 0;
+	thisEnviroment->currentRegister = 4;
+	thisEnviroment->currentIndexCode = 0;
 
 	for(i = 0; fscanf(ifp, "%s", buffer) != EOF; i++){
 		

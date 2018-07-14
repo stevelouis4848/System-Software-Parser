@@ -5,11 +5,14 @@ int MAX_NUM_TOKENS = 500;
 int MAX_TOKEN_LENGTH = 11;
 int IDENTIFIER_MAX_LENGTH = 11;
 int NUMBER_MAX_LENGTH = 5;
+int MAX_SYMBOL_TABLE_SIZE = 500;
 int TABLE_SIZE = 34;
 int error_halt = 0;
 int lexicalPrint= 0;
 int parserPrint = 0;
 int vmPrint = 0;
+int kind; 		
+char nameHolder[10];
 
 typedef struct listyString{
 							int c;
@@ -35,19 +38,31 @@ typedef enum{
 typedef struct token{
 
 				int type;
-				char value[11];
+				char value[10];
 }token;
+
+
+
+typedef struct{ 
+				int kind; 		// const = 1, var = 2, proc = 3
+				char name[10];	// name up to 11 chars
+				int val; 		// number (ASCII value) 
+				int level; 		// L level
+				int addr; 		// M address
+				int mark;		// to indicate that code has been generated already for a block.
+} symbol; 
 
 typedef struct enviroment{
 
 				token *thisToken;
+				symbol *thisSymbol;
+				int *vmCode
 				int currentIndexToken;
-				int arrayLength;
+				int currentIndexSymbol;
+				int currenRegister;
+				int currentIndexCode;
 }enviroment;
-
-token tokenHolder;
-				
-				
+							
 char *opCode[] = {"NULL", "LIT", "RTN", "LOD", "STO", "CAL", "INC", "JMP","JPC", "SIO",
 					"NEG", "ADD", "SUB", "MUL", "DIV", "ODD","MOD", "EQL", "NEQ",
 					"LSS", "LEQ", "GTR", "GEQ"};
@@ -68,6 +83,8 @@ typedef struct enviroment2{
 							instruction ir; // current instruction
 							
 					}enviroment2;
+token tokenHolder;
+symbol symbolHolder;
 void program();
 void condition(enviroment *thisEnviroment, FILE *ofp);
 void block(enviroment *thisEnviroment, FILE *ofp);
@@ -78,6 +95,8 @@ void expression(enviroment *thisEnviroment, FILE *ofp);
 void term(enviroment *thisEnviroment, FILE *ofp);
 void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
+void symbolTablePush(enviroment *thisEnviroment, );
+void symbolTableSearch(enviroment *thisEnviroment, );
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
