@@ -1,12 +1,17 @@
+void emit(){
+
+
+
+}
+
 void codeGeneration(int type, enviroment *thisEnviroment){
 
 	if(type == 0){
 
 		if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 1){
+
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 1;
-
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr;
-
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
 			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
 		}
@@ -18,27 +23,39 @@ void codeGeneration(int type, enviroment *thisEnviroment){
 		thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
 		}
 
-	]
-
-	
-
-}
-void symbolTablePush(enviroment *thisEnviroment){
-
-	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind = symbolHolder.kind;
-	sytcpy(symbolHolder.name, thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].name);
-	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].value = symbolHolder.value;
-	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level = 0;
-	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr = thisEnviroment->currentRegister;
-	thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].mark = 0; 
-
-	codeGeneration(O, thisEnviroment);
-	isEnviroment->currentIndexSymbol;
-	thisEnviroment->currentRegister ++;
+	}
 }
 
-void symbolTableSearch(enviroment *thisEnviroment,int type, char value[10]){
+void symbolTablePush(int type,enviroment *thisEnviroment){
 
+	if(type == 0){
+		if(symbolTableSearch(thisEnviroment, symbolHolder.name) == -1){
+
+			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind = symbolHolder.kind;
+			sytcpy(symbolHolder.name, thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].name);
+			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].value = symbolHolder.value;
+			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level = 0;
+			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr = thisEnviroment->currentRegister;
+			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].mark = 0; 
+
+			codeGeneration(O, thisEnviroment);
+			isEnviroment->currentIndexSymbol;
+			thisEnviroment->currentRegister ++;
+		}
+	}
+}
+
+int symbolTableSearch(enviroment *thisEnviroment,int type, char name[10]){
+
+	for(i = 0; i < thisEnviroment->currentIndexSymbol; i++ ){
+
+		if(strcp(thisEnviroment->thisSymbol[i].name, name) == 0){
+
+			return i;
+		}
+	}
+
+	return -1;
 }
 
 void error(int errorCode,FILE *ofp){
@@ -326,7 +343,7 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 				}
 				symbolHolder.value = atoi(tokenHolder.value)
 
-				symbolTablePush(thisEnviroment, symbolHolder);
+				symbolTablePush(0, thisEnviroment);
 				
 			} while(tokenHolder.type == commasym);
 
@@ -413,6 +430,16 @@ void program(){
 		error(9, ofp);
 	}
 
+	for(i = 0; i < thisEnviroment->currentIndexCode; i+=4){
+
+		fprinf(ofp2,"OP\tR\tL\tM\n");
+		if((i + 1) % 4 == 0){
+			fprintf(ofp2, "\n");
+		}
+		fprintf(ofp2, "%d ",vmCode[i]);
+	}
+
+	fprinf(ofp,"parsed with no error\n");
 	fclose(ifp);	
 	fclose(ofp);
 	fclose(ofp2);

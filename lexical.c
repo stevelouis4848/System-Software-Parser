@@ -17,7 +17,7 @@ listyString *symEncoder(listyString *inputHead, FILE *ofp, FILE *ofp2, FILE *ofp
 		return temporaryHead->next;
 	}
 
-	else if(temporaryHead->next != NULL && strcmp(bufferSym,":") == 0 || strcmp(bufferSym,"<") == 0 
+	else if(temporaryHead->next != NULL && strcmp(bufferSym,":") == 0 || strcmp(bufferSym,"<") == 0;
 				|| strcmp(bufferSym,">") == 0 || strcmp(bufferSym,"!") == 0){
 
 		nextBufferSym[0] = temporaryHead->next->c;
