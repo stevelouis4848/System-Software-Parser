@@ -7,6 +7,7 @@
 # include"test.c"
 # include"VM.c"
 
+
 int lexicalPrint= 0;
 int parserPrint = 0;
 int vmPrint = 0;
