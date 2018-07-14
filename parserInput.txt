@@ -1,1 +1,1 @@
-7 7 2 Tricky 2 Test 7 7 2 This 2 test 2 attempts 2 to 2 test 2 whether 2 or 2 not 2 the 2 Lexical 2 Analyzer 7 7 2 treats 2 tricky 2 cases 2 correctly 19 17 19 2 x 20 2 y 18 2 varx 
+29 2 x 17 2 y 18 21 2 x 20 2 y 4 3 56 18 22 

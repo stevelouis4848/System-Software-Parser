@@ -1,4 +1,5 @@
 Error messages for the tiny PL/0 Parser:
+0.  Unknown error
 1.	Use = instead of :=.
 2.	= must be followed by a number.
 3.	Identifier must be followed by =.

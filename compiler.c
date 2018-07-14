@@ -26,7 +26,7 @@ int main( int argc, char **argv){
 		*/
 			printf("running programs\n");
 			scanner(argv[i]);
-			readFile();
+			program();
 			//vm();
 	}
 	printf("done\n");

@@ -45,6 +45,7 @@ typedef struct enviroment{
 				int arrayLength;
 }enviroment;
 
+token tokenHolder;
 				
 				
 char *opCode[] = {"NULL", "LIT", "RTN", "LOD", "STO", "CAL", "INC", "JMP","JPC", "SIO",
@@ -67,7 +68,7 @@ typedef struct enviroment2{
 							instruction ir; // current instruction
 							
 					}enviroment2;
-
+void program();
 void condition(enviroment *thisEnviroment, FILE *ofp);
 void block(enviroment *thisEnviroment, FILE *ofp);
 token getToken(enviroment *thisEnviroment);

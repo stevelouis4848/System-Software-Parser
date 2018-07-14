@@ -1,117 +1,122 @@
 void error(int errorCode,FILE *ofp){
 
+	printf("error\n");
+
 	switch(errorCode){
 
+		case 0:
+			printf("***** Error number 0, unknown error.\n");
+			exit(0);
 		case 1:
-			printf("Use = instead of :=.\n");
+			printf("***** Error number 1, use = instead of :=.\n");
 			exit(0);
 		break;
 		case 2:
-			printf("= must be followed by a number.\n");
+			printf("***** Error number 2, = must be followed by a number.\n");
 			exit(0);
 		break;
 		case 3:
-			printf("Identifier must be followed by =.\n");
+			printf("***** Error number 3, identifier must be followed by =.\n");
 			exit(0);
 		break;
 		case 4:
-			printf("const, var, procedure must be followed by identifier.\n");
+			printf("***** Error number 4, const, var, procedure must be followed by identifier.\n");
 			exit(0);
 		break;
 		case 5:
-			printf("semicolon or comma missing.\n");
+			printf("***** Error number 5, semicolon or comma missing.\n");
 			exit(0);
 		break;
 		case 6:
-			printf("Incorrect symbol after procedure decleration.\n");
+			printf("***** Error number 6, incorrect symbol after procedure decleration.\n");
 			exit(0);
 		break;
 		case 7:
-			printf("Statement expected.\n");
+			printf("***** Error number 7, statement expected.\n");
 			exit(0);
 		break;
 		case 8:
-			printf("Incorrect symbol after statement part in block.\n");
+			printf("***** Error number 8, incorrect symbol after statement part in block.\n");
 			exit(0);
 		break;
 		case 9:
-			printf("Period expected.\n");		
+			printf("***** Error number 9, period expected.\n");		
 			exit(0);
 		break;
 		case 10:
-			printf("semicolon between statements missing.\n");
+			printf("***** Error number 10, semicolon between statements missing.\n");
 			exit(0);
 		break;
 		case 11:
-			printf("Undeclared identifier.\n");
+			printf("***** Error number 11, undeclared identifier.\n");
 			exit(0);
 		break;
 		case 12:
-			printf("Assignment to constant or procedure is not allowed.\n");
+			printf("***** Error number 12, assignment to constant or procedure is not allowed.\n");
 			exit(0);
 		break;
 		case 13:
-			printf("Assignment operator expected.\n");
+			printf("***** Error number 13, assignment operator expected.\n");
 			exit(0);
 		break;
 		case 14:
-			printf("call must be folowed by an identifier.\n");
+			printf("***** Error number 14, call must be folowed by an identifier.\n");
 			exit(0);
 		break;
 
 		case 15:
-			printf("call of a constant or variable is meaningless.\n");
+			printf("***** Error number 15, call of a constant or variable is meaningless.\n");
 			exit(0);
 		break;
 		case 16:
-			printf("then exoected.\n");
+			printf("***** Error number 16, then exoected.\n");
 			exit(0);
 		break;
 		case 17:
-			printf("semicolon or } expected.\n");
+			printf("***** Error number 17, semicolon or } expected.\n");
 			exit(0);
 		break;
 
 		case 18:
-			printf("do expected.\n");
+			printf("***** Error number 18, do expected.\n");
 			exit(0);
 		break;
 		case 19:
-			printf("Incorrect symbol following statement.\n");
+			printf("***** Error number 19, incorrect symbol following statement.\n");
 			exit(0);
 		break;
 		case 20:
-			printf("Relational operator expected.\n");
+			printf("***** Error number 20, relational operator expected.\n");
 			exit(0);
 		break;
 
 		case 21:
-			printf("Expression must no contain a procedure identi.\n");
+			printf("***** Error number 21, expression must no contain a procedure identi.\n");
 			exit(0);
 		break;
 		case 22:
-			printf("Right parantheses missing.\n");
+			printf("***** Error number 22, right parantheses missing.\n");
 			exit(0);
 		break;
 
 		case 23:
-			printf("The preceding factor cannot begin with this symbol.\n");
+			printf("***** Error number 23, the preceding factor cannot begin with this symbol.\n");
 			exit(0);
 		break;
 		case 24:
-			printf("An expression cannot begin with this symbol.\n");
+			printf("***** Error number 24, an expression cannot begin with this symbol.\n");
 			exit(0);
 		break;
 		case 25:
-			printf("This number is too large.\n");
+			printf("***** Error number 25, this number is too large.\n");
 			exit(0);
 		break;
 		case 26:
-			printf("Identifier too long.\n");
+			printf("***** Error number 26, identifier too long.\n");
 			exit(0);
 		break;
 		case 27:
-			printf("Invalid symbol.\n");
+			printf("***** Error number 27, invalid symbol.\n");
 			exit(0);
 		break;
 	}
@@ -119,51 +124,57 @@ void error(int errorCode,FILE *ofp){
 
 void factor(enviroment *thisEnviroment, FILE *ofp){
 
-	token tokenHolder = getToken(thisEnviroment);
-	
+	printf("factor\n");
+
 	if(tokenHolder.type == identsym || tokenHolder.type == numbersym){
 
-		return;
+		tokenHolder = getToken(thisEnviroment);
 	}
 
 	else if(tokenHolder.type == lparentsym){
 
+		tokenHolder = getToken(thisEnviroment);
 		expression(thisEnviroment, ofp);
 		
 		if(tokenHolder.type != rparentsym){
 		error(22, ofp);
 		}
+
+		tokenHolder = getToken(thisEnviroment);
 	}
 	else{
 
-		error(1, ofp);
+		error(0, ofp);
 	}
 
 }
 
 void term(enviroment *thisEnviroment, FILE *ofp){
 
-	token tokenHolder = getToken(thisEnviroment);
+	printf("term\n");
+
 	factor(thisEnviroment, ofp);
 
-	tokenHolder = getToken(thisEnviroment);
 	while(tokenHolder.type == multsym || tokenHolder.type == slashsym){
+		tokenHolder = getToken(thisEnviroment);
 		factor(thisEnviroment, ofp);
 	}
 }
 
 void expression(enviroment *thisEnviroment, FILE *ofp){
+	printf("expression\n");
 
-	token tokenHolder = getToken(thisEnviroment);
-
-	while(tokenHolder.type == plussym || tokenHolder.type == minussym){
+	if(tokenHolder.type != plussym && tokenHolder.type != minussym){
 		term(thisEnviroment, ofp);
+	}
+	while(tokenHolder.type == plussym || tokenHolder.type == minussym){	
+		tokenHolder = getToken(thisEnviroment);
+		term(thisEnviroment, ofp);		
 	}
 }	
 
 void condition(enviroment *thisEnviroment, FILE *ofp){
-
-	token tokenHolder = getToken(thisEnviroment);
+	printf("condition\n");
 
 	switch(tokenHolder.type){
 
@@ -182,14 +193,14 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 		expression(thisEnviroment, ofp);			
 	}
 
+	tokenHolder = getToken(thisEnviroment);
 	statement(thisEnviroment, ofp);
 }
 
 
 void statement(enviroment *thisEnviroment, FILE *ofp){
 
-
-	token tokenHolder = getToken(thisEnviroment);
+	printf("statement\n");
 
 	switch(tokenHolder.type){
 
@@ -197,26 +208,26 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 	
 			tokenHolder = getToken(thisEnviroment);
 			if(tokenHolder.type != becomessym){
-				/*error(3);*/
+				error(0, ofp);
 			}
+			tokenHolder = getToken(thisEnviroment);
 			expression(thisEnviroment, ofp);
 		break;
 		case(beginsym):
 
-			
-				statement(thisEnviroment, ofp);
+			tokenHolder = getToken(thisEnviroment);
+			statement(thisEnviroment, ofp);
 
 			while(tokenHolder.type == semicolonsym){
-
 				tokenHolder = getToken(thisEnviroment);
 				statement(thisEnviroment, ofp);
 			}
-			tokenHolder = getToken(thisEnviroment);
-
+			
 			if(tokenHolder.type != endsym){
-
-				/*error(9);*/
+				error(0, ofp);
 			}
+			tokenHolder = getToken(thisEnviroment);
+		break;	
 		case(ifsym):
 			tokenHolder = getToken(thisEnviroment);
 			condition(thisEnviroment, ofp);
@@ -231,7 +242,6 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 		break;
 		case(whilesym):
 			tokenHolder = getToken(thisEnviroment);
-
 			condition(thisEnviroment, ofp);
 
 			if(tokenHolder.type != dosym){
@@ -247,7 +257,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 
 void block(enviroment *thisEnviroment, FILE *ofp){
 
-	token tokenHolder = getToken(thisEnviroment);
+	printf("block token:%d\n",tokenHolder.type);
 
 	switch(tokenHolder.type){
 
@@ -277,30 +287,39 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 				error(5, ofp);
 			}
 		break;
-		case(identsym):
+		case(varsym):
 
 			do{
+
+				tokenHolder = getToken(thisEnviroment);
+
+				if(tokenHolder.type != identsym){
+				error(4, ofp);
+				}
+
 				tokenHolder = getToken(thisEnviroment);
 			}while(tokenHolder.type == commasym);
 
-			tokenHolder = getToken(thisEnviroment);
 			if(tokenHolder.type != semicolonsym){
 				error(5, ofp);
 			}
 	}
 
+	tokenHolder = getToken(thisEnviroment);
 	statement(thisEnviroment, ofp);
 }
 
 token getToken(enviroment *thisEnviroment){
 
-	token tokenHolder = thisEnviroment->thisToken[thisEnviroment->currentIndexToken];
+	tokenHolder = thisEnviroment->thisToken[thisEnviroment->currentIndexToken];
 	thisEnviroment->currentIndexToken++;
+
+	printf("getToken:\nToken:%d value:%s \n",tokenHolder.type, tokenHolder.value);
 
 	return tokenHolder;
 }
 
-void readFile(){
+void program(){
 
 	int i;
 	char buffer[MAX_NUM_TOKENS];
@@ -319,12 +338,11 @@ void readFile(){
 
 	for(i = 0; fscanf(ifp, "%s", buffer) != EOF; i++){
 		
-		
-
 		buffer2 = atoi(buffer);
 		printf("buffer: %d\n", buffer2);
 		
 		thisEnviroment->thisToken[i].type = buffer2;
+		strcpy(thisEnviroment->thisToken[i].value,"\0");
 
 		if(buffer2 == 2 || buffer2 == 3){
 
@@ -334,11 +352,15 @@ void readFile(){
 		}
 	}
 
+	tokenHolder = getToken(thisEnviroment);
 	block(thisEnviroment, ofp);	
+
+	if(tokenHolder.type != periodsym){
+
+		error(9, ofp);
+	}
 
 	fclose(ifp);	
 	fclose(ofp);
 	fclose(ofp2);
 }
-
-
