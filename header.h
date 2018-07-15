@@ -20,7 +20,8 @@ typedef struct listyString{
 }listyString;
 
 typedef enum {
-    LIT = 1, OPR, LOD, STO, CAL, INC, JMP, JPC, SIO
+			    LIT = 1, RTN, LOD, STO, CAL, INC, JMP, JPC, SIO, NEG, ADD, SUB, 
+			    MUL, DIV, ODD, MOD, EQL, NEQ, LSS, LEQ, GTR, GEQ
 } opCodes;
 
 char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "odd", "=", "!=", "<", "<=", ">", ">=",
@@ -72,7 +73,7 @@ typedef struct enviroment{
 				int currentIndexSymbol;
 				int currentIndexRegister;
 				int currentIndexCode;
-				int numOfVatiables;
+				int numOfVariables;
 
 }enviroment;
 							

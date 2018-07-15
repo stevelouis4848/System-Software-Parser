@@ -219,7 +219,8 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
     else if (tokenHolder.type == numbersym) {
         fscanf(input, "%d", &tableSearch);
         emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++ ,0, tableSearch);
-        getToken();
+        getToken(thisEnviroment);
+    }
 
 	else if(tokenHolder.type == lparentsym){
 
@@ -418,11 +419,9 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 		   if(tokenHolder.type == periodsym){
 		            error(17, ofp);
 		     }
-		     else if (tokenHolder.type != endsym) {
+	     	else if (tokenHolder.type != endsym){
 		            error(7, ofp);
-		      }
-	
-
+		     }
 	}
 
 }
