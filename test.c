@@ -1,5 +1,5 @@
 
-void emit(enviromemt *thisEnviroment, int op, int reg, int level, imt m){
+void emit(enviroment *thisEnviroment, int op, int reg, int level, int m){
 
 	printf("emitn\n");
 
@@ -26,9 +26,7 @@ void symbolTablePush(int type, enviroment *thisEnviroment){
 			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr = 0;
 			thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].mark = 0; 
 
-			codeGeneration(0, thisEnviroment);
 			thisEnviroment->currentIndexSymbol;
-			thisEnviroment->currentIndexRegister++;
 		}
 	}
 
@@ -43,9 +41,7 @@ void symbolTablePush(int type, enviroment *thisEnviroment){
 				thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr = thisEnviroment->numOfVariables + 4;
 				thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].mark = 0; 
 
-				codeGeneration(0, thisEnviroment);
 				thisEnviroment->currentIndexSymbol;
-				thisEnviroment->currentIndexRegister++;
 				thisEnviroment->numOfVariables++;
 			}
 	}
@@ -194,11 +190,12 @@ void error(int errorCode,FILE *ofp){
 void factor(enviroment *thisEnviroment, FILE *ofp){
 
 	printf("factor\n");
-	int tableSearch;
+	int tableSearch,input;
+
 
 	if (tokenHolder.type == identsym) {
         
-        tableSearch = symbolTableSearch(tokenHolder.value);
+        tableSearch = symbolTableSearch(thisEnviromennt, tokenHolder.value);
         
         if (thisEnviroment->thisSymbol[tableSearch].kind == 1) {
             emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++, 0, thisEnviroment->thisSymbol[tableSearch].value);
@@ -219,7 +216,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
         tokenHolder = getToken(thisEnviroment);
     }
 
-    else if (currToken == numbersym) {
+    else if (tokenHolder.type == numbersym) {
         fscanf(input, "%d", &tableSearch);
         emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++ ,0, tableSearch);
         getToken();
@@ -310,7 +307,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 	switch(tokenHolder.type){
 
 		case(identsym):
-			tableSearch = symbolTableSearch(tokenHolder.value, thisEnviroment) ;
+			tableSearch = symbolTableSearch(thisEnviroment, tokenHolder.value) ;
 
 			if(tableSearch == -1){
 
@@ -381,7 +378,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 				error(4, ofp);
 			}
 
-			tableSearch = symbolTableSearch(tokenHolder.value);
+			tableSearch = symbolTableSearch(thisEnviroment, tokenHolder.value);
 
 			if(thisEnviroment->thisSymbol[tableSearch].kind == 1){
 
@@ -407,7 +404,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			}
 
 
-			tableSearch = symbolTableSearch(tokenHolder.value);
+			tableSearch = symbolTableSearch(thisEnviroment, tokenHolder.value);
 
 			if(thisEnviroment->thisSymbol[tableSearch].kind != 2){
 				error(11, ofp);
@@ -415,17 +412,18 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			emit(thisEnviroment, SIO,thisEnviroment->currentIndexRegister ,0 , 1);
 			emit(thisEnviroment, STO,thisEnviroment->currentIndexRegister ,thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
 			tokenHolder = getToken(thisEnviroment);
-
+		break;
+		default:
+			
 			else{
 
 		        if(tokenHolder.type == periodsym){
-		            error(17 ofp,);
+		            error(17, ofp);
 		        }
 		        else if (tokenHolder.type != endsym) {
 		            error(7, ofp);
 		        }
 			}
-		break;
 
 	}
 
@@ -568,7 +566,7 @@ void program(){
 	for(i = 0; i < thisEnviroment->currentIndexCode; i++){
 
 		printf("index:%d\n"i);
-		
+
 		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].op);
 		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].r);
 		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].l);

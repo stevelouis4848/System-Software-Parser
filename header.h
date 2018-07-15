@@ -52,18 +52,18 @@ typedef struct{
 				int mark;		// to indicate that code has been generated already for a block.
 } symbol; 
 
-typedef struct vmCode{
+typedef struct instruction{
 							int op; // opcode
 							int r; // reg
 							int l; // L
 							int m; // M
-						}vmCode;
+						}instruction;
 
 typedef struct enviroment{
 
 				token *thisToken;
 				symbol *thisSymbol;
-				vmCode *thisVmCode;
+				instruction *thisVmCode;
 				int currentIndexToken;
 				int currentIndexSymbol;
 				int currentIndexRegister;
@@ -73,13 +73,6 @@ typedef struct enviroment{
 char *opCode[] = {"NULL", "LIT", "RTN", "LOD", "STO", "CAL", "INC", "JMP","JPC", "SIO",
 					"NEG", "ADD", "SUB", "MUL", "DIV", "ODD","MOD", "EQL", "NEQ",
 					"LSS", "LEQ", "GTR", "GEQ"};
-
-typedef struct instruction{
-							int op; // opcode
-							int r; // reg
-							int l; // L
-							int m; // M
-						}instruction;
 
 typedef struct enviroment2{
 							int pc; // pc
@@ -104,7 +97,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
 void symbolTablePush(int type, enviroment *thisEnviroment);
 int symbolTableSearch(enviroment *thisEnviroment,char name[10]);
-void emit(enviromemt *thisEnviroment, int op, int register, int level, imt m)
+void emit(enviroment *thisEnviroment, int op, int register, int level, imt m)
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
