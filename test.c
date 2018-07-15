@@ -218,7 +218,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
 
     else if (tokenHolder.type == numbersym) {
        
-        tableSearch = tokenHolder.value;
+        tableSearch = atoi(tokenHolder.value);
         emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++ ,0, tableSearch);
         getToken(thisEnviroment);
     }
@@ -286,7 +286,7 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 			expression(thisEnviroment, ofp);
 			//stuck
-			emit(thisEnviroment, ODD,thisEnviroment->currentIndexRegister, 0, );
+			emit(thisEnviroment, ODD,thisEnviroment->currentIndexRegister, 0, 0);
 		break;
 		default:
 			expression(thisEnviroment, ofp);
@@ -306,8 +306,10 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 
 void statement(enviroment *thisEnviroment, FILE *ofp){
 
+
 	printf("statement\n");
 	int tableSearch, tempM, tempRegister;
+	token tokenHolder;
 	switch(tokenHolder.type){
 
 		case(identsym):
@@ -346,7 +348,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			if(tokenHolder.type != endsym){
 				error(17, ofp);
 			}
-			else if(tokenHolde.type == beginsym || tokenHolder.type == identsym){
+			else if(tokenHolder.type == beginsym || tokenHolder.type == identsym){
             	error(10, ofp);
         	}
 			tokenHolder = getToken(thisEnviroment);
@@ -483,7 +485,7 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 
 				strcpy(tokenHolder.value,symbolHolder.name);
 				symbolTablePush(2, thisEnviroment);
-				numVariables++;
+				thisEnviroment->numOfVariables++;
 
 				tokenHolder = getToken(thisEnviroment);
 			}while(tokenHolder.type == commasym);
