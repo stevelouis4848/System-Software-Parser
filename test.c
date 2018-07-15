@@ -414,16 +414,14 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 		break;
 		default:
-			
-			else{
 
-		        if(tokenHolder.type == periodsym){
+		   if(tokenHolder.type == periodsym){
 		            error(17, ofp);
-		        }
-		        else if (tokenHolder.type != endsym) {
+		     }
+		     else if (tokenHolder.type != endsym) {
 		            error(7, ofp);
-		        }
-			}
+		      }
+	
 
 	}
 

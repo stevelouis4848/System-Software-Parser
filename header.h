@@ -19,6 +19,10 @@ typedef struct listyString{
 							struct listyString *next;						
 }listyString;
 
+typedef enum {
+    LIT = 1, OPR, LOD, STO, CAL, INC, JMP, JPC, SIO
+} opCodes;
+
 char *table[] = {"0", "\0", "2", "3", "+", "-", "*", "/", "odd", "=", "!=", "<", "<=", ">", ">=",
 					"(", ")", ",", ";", ".", ":=", "begin", "end", "if", "then", "while", "do",
 					"call", "const", "var", "procedure", "write", "read", "else"
@@ -68,6 +72,8 @@ typedef struct enviroment{
 				int currentIndexSymbol;
 				int currentIndexRegister;
 				int currentIndexCode;
+				int numOfVatiables 
+
 }enviroment;
 							
 char *opCode[] = {"NULL", "LIT", "RTN", "LOD", "STO", "CAL", "INC", "JMP","JPC", "SIO",
@@ -97,7 +103,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
 void symbolTablePush(int type, enviroment *thisEnviroment);
 int symbolTableSearch(enviroment *thisEnviroment,char name[10]);
-void emit(enviroment *thisEnviroment, int op, int register, int level, imt m)
+void emit(enviroment *thisEnviroment, int op, int register, int level, int m)
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
