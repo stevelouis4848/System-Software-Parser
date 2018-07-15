@@ -1,25 +1,14 @@
 
-void emit(int op, enviroment *thisEnviroment){
+void emit(enviromemt *thisEnviroment, int op, int reg, int level, imt m){
 
 	printf("emitn\n");
-	if(type == 0){
 
-		if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 1){
+	thisEnviroment->thisVmCode[thisEnviroment->currentIndexCode].op = op;
+	thisEnviroment->thisVmCode[thisEnviroment->currentIndexCode].r = reg; 
+	thisEnviroment->thisVmCode[thisEnviroment->currentIndexCode].l = level;
+	thisEnviroment->thisVmCode[thisEnviroment->currentIndexCode].m = m;
 
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 1;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
-		}
-		else if(thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].kind == 2){
-
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = 4;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].addr;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
-			thisEnviroment->vmCode[thisEnviroment->currentIndexCode++] = thisEnviroment->thisSymbol[thisEnviroment->currentIndexSymbol].level;
-		}
-
-	}
+	thisEnviroment->currentIndexCode;
 }
 
 void symbolTablePush(int type, enviroment *thisEnviroment){
@@ -212,11 +201,11 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
         tableSearch = symbolTableSearch(tokenHolder.value);
         
         if (thisEnviroment->thisSymbol[tableSearch].kind == 1) {
-            emit(LIT,thisEnviroment->currentIndexRegister++, 0, thisEnviroment->thisSymbol[tableSearch].value);
+            emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++, 0, thisEnviroment->thisSymbol[tableSearch].value);
         }
         
         else if (thisEnviroment->thisSymbol[tableSearch].kind == 2) {
-            emit(LOD,thisEnviroment->currentIndexRegister++, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].addr);
+            emit(thisEnviroment, LOD,thisEnviroment->currentIndexRegister++, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].addr);
         }
         
         else if (thisEnviroment->thisSymbol[tableSearch].kind == 0) {
@@ -229,6 +218,11 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
         
         tokenHolder = getToken(thisEnviroment);
     }
+
+    else if (currToken == numbersym) {
+        fscanf(input, "%d", &tableSearch);
+        emit(thisEnviroment, LIT,thisEnviroment->currentIndexRegister++ ,0, tableSearch);
+        getToken();
 
 	else if(tokenHolder.type == lparentsym){
 
@@ -261,12 +255,10 @@ void term(enviroment *thisEnviroment, FILE *ofp){
 		factor(thisEnviroment, ofp);
 
 		if(tempToken == multsym){
-			emit(MUL, 0, 0, );
-			emit(DIV, );
-
+			emit(thisEnviroment, MUL, 0, 0, );
 		}
 		else{
-
+			emit(thisEnviroment, DIV,0,0,0);
 		}
 	}
 }
@@ -293,7 +285,7 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 			expression(thisEnviroment, ofp);
 			//stuck
-			emit(ODD,thisEnviroment->currentIndexRegister, 0, );
+			emit(thisEnviroment, ODD,thisEnviroment->currentIndexRegister, 0, );
 		break;
 		default:
 			expression(thisEnviroment, ofp);
@@ -303,7 +295,7 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 			}
 		tokenHolder = getToken(thisEnviroment);
 		expression(thisEnviroment, ofp);	
-		emit();		
+		emit(thisEnviroment, );		
 	}
 
 	tokenHolder = getToken(thisEnviroment);
@@ -338,7 +330,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 			expression(thisEnviroment, ofp);
 			tempRegister = thisEnviroment->currentIndexRegister--;
-			emit(STO, tempRegister ,thisEnviroment->thisSymbol[tableSearch].level, tempM);
+			emit(thisEnviroment, STO, tempRegister ,thisEnviroment->thisSymbol[tableSearch].level, tempM);
 		break;
 		case(beginsym):
 
@@ -393,17 +385,17 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 
 			if(thisEnviroment->thisSymbol[tableSearch].kind == 1){
 
-				emit(LIT, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].value);
+				emit(thisEnviroment, LIT, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].value);
 			}
 
 			else if(thisEnviroment->thisSymbol[tableSearch].kind == 2){
 
-				emit(STO, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
+				emit(thisEnviroment, STO, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
 			}
 			else{
 
 				error(11, ofp);
-				emit(SIO, 0, 0, 1);
+				emit(thisEnviroment, SIO, 0, 0, 1);
 				tokenHolder = getToken(thisEnviroment);
 			}
 		break;
@@ -420,8 +412,8 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			if(thisEnviroment->thisSymbol[tableSearch].kind != 2){
 				error(11, ofp);
 			}
-			emit(SIO,thisEnviroment->currentIndexRegister ,0 , 1);
-			emit(STO,thisEnviroment->currentIndexRegister ,thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
+			emit(thisEnviroment, SIO,thisEnviroment->currentIndexRegister ,0 , 1);
+			emit(thisEnviroment, STO,thisEnviroment->currentIndexRegister ,thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
 			tokenHolder = getToken(thisEnviroment);
 
 			else{
@@ -504,7 +496,7 @@ void block(enviroment *thisEnviroment, FILE *ofp){
 
 	}
 
-	emit(thisEnviroment, 6, 0, dx);
+	emit(thisEnviroment, thisEnviroment, 6, 0, dx);
 	tokenHolder = getToken(thisEnviroment);
 	statement(thisEnviroment, ofp);
 }
@@ -534,7 +526,7 @@ void program(){
 	thisEnviroment = malloc(sizeof(enviroment));
 	thisEnviroment->thisToken = malloc(MAX_NUM_TOKENS * sizeof (token));
 	thisEnviroment->thisSymbol = malloc(MAX_SYMBOL_TABLE_SIZE * sizeof (symbol));
-	thisEnviroment->vmCode = malloc((MAX_SYMBOL_TABLE_SIZE * 4) * sizeof (int));
+	thisEnviroment->thisVmCode = malloc(MAX_SYMBOL_TABLE_SIZE * sizeof (instruction));
 	thisEnviroment->currentIndexToken = 0;
 	thisEnviroment->currentIndexSymbol = 0;
 	thisEnviroment->currentIndexRegister = 4;
@@ -566,7 +558,7 @@ void program(){
 	}
 
 	//halts program.
-	emit(sio, 0,0,3);
+	emit(thisEnviroment, sio, 0,0,3);
 
 	printf("code size:%d\n", thisEnviroment->currentIndexCode);
 
@@ -576,12 +568,16 @@ void program(){
 	for(i = 0; i < thisEnviroment->currentIndexCode; i++){
 
 		printf("index:%d\n"i);
-		if((i) % 4 == 0){
-			fprintf(ofp2, "\n");
-			printf("\n");
-		}
-		fprintf(ofp2, "%d ",thisEnviroment->vmCode[i]);
-		printf("%d ",thisEnviroment->vmCode[i]);
+		
+		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].op);
+		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].r);
+		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].l);
+		fprintf(ofp2, "%d ",thisEnviroment->thisVmCode[i].m);
+		
+		printf("%d ",thisEnviroment->thisVmCode[i].op);
+		printf("%d ",thisEnviroment->thisVmCode[i].r);
+		printf("%d ",thisEnviroment->thisVmCode[i].l);
+		printf("%d ",thisEnviroment->thisVmCode[i].m);
 	}
 	fprintf(ofp2,"\n");
 	printf("\n");

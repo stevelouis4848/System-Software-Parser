@@ -52,11 +52,18 @@ typedef struct{
 				int mark;		// to indicate that code has been generated already for a block.
 } symbol; 
 
+typedef struct vmCode{
+							int op; // opcode
+							int r; // reg
+							int l; // L
+							int m; // M
+						}vmCode;
+
 typedef struct enviroment{
 
 				token *thisToken;
 				symbol *thisSymbol;
-				int *vmCode;
+				vmCode *thisVmCode;
 				int currentIndexToken;
 				int currentIndexSymbol;
 				int currentIndexRegister;
@@ -97,6 +104,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
 void symbolTablePush(int type, enviroment *thisEnviroment);
 int symbolTableSearch(enviroment *thisEnviroment,char name[10]);
+void emit(enviromemt *thisEnviroment, int op, int register, int level, imt m)
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
