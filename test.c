@@ -205,11 +205,30 @@ void error(int errorCode,FILE *ofp){
 void factor(enviroment *thisEnviroment, FILE *ofp){
 
 	printf("factor\n");
+	int tableSearch;
 
-	if(tokenHolder.type == identsym || tokenHolder.type == numbersym){
-
-		tokenHolder = getToken(thisEnviroment);
-	}
+	if (tokenHolder.type == identsym) {
+        
+        tableSearch = symbolTableSearch(tokenHolder.value);
+        
+        if (thisEnviroment->thisSymbol[tableSearch].kind == 1) {
+            emit(LIT,thisEnviroment->currentIndexRegister++, 0, thisEnviroment->thisSymbol[tableSearch].value);
+        }
+        
+        else if (thisEnviroment->thisSymbol[tableSearch].kind == 2) {
+            emit(LOD,thisEnviroment->currentIndexRegister++, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].addr);
+        }
+        
+        else if (thisEnviroment->thisSymbol[tableSearch].kind == 0) {
+            error(11, ofp);
+        }
+        
+        else if (thisEnviroment->thisSymbol[tableSearch].kind == 3) {
+            error(21, ofp);
+        }
+        
+        tokenHolder = getToken(thisEnviroment);
+    }
 
 	else if(tokenHolder.type == lparentsym){
 
@@ -224,7 +243,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp){
 	}
 	else{
 
-		error(0, ofp);
+		error(23, ofp);
 	}
 
 }
@@ -236,8 +255,19 @@ void term(enviroment *thisEnviroment, FILE *ofp){
 	factor(thisEnviroment, ofp);
 
 	while(tokenHolder.type == multsym || tokenHolder.type == slashsym){
+
+		tempToken = tokenHolder.type;
 		tokenHolder = getToken(thisEnviroment);
 		factor(thisEnviroment, ofp);
+
+		if(tempToken == multsym){
+			emit(MUL, 0, 0, );
+			emit(DIV, );
+
+		}
+		else{
+
+		}
 	}
 }
 
@@ -262,6 +292,8 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 			
 			tokenHolder = getToken(thisEnviroment);
 			expression(thisEnviroment, ofp);
+			//stuck
+			emit(ODD,thisEnviroment->currentIndexRegister, 0, );
 		break;
 		default:
 			expression(thisEnviroment, ofp);
@@ -270,7 +302,8 @@ void condition(enviroment *thisEnviroment, FILE *ofp){
 				error(20, ofp);
 			}
 		tokenHolder = getToken(thisEnviroment);
-		expression(thisEnviroment, ofp);			
+		expression(thisEnviroment, ofp);	
+		emit();		
 	}
 
 	tokenHolder = getToken(thisEnviroment);
@@ -291,9 +324,10 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 
 				error(11, ofp);
 			}
-			else if (thisEnviroment->thisSymbol[tableSearch].kind != 2)
+			else if (thisEnviroment->thisSymbol[tableSearch].kind != 2){
            	 error(12, ofp);
-       		}
+			}
+       		
 			
 			tempM = thisEnviroment->thisSymbol[tableSearch].addr;
 
@@ -347,7 +381,62 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 			statement(thisEnviroment, ofp);
 		break;
+		case(writesym)
+
+			tokenHolder = getToken(thisEnviroment);
+			if(tokenHolder.type != identsym){
+
+				error(4, ofp);
+			}
+
+			tableSearch = symbolTableSearch(tokenHolder.value);
+
+			if(thisEnviroment->thisSymbol[tableSearch].kind == 1){
+
+				emit(LIT, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level, thisEnviroment->thisSymbol[tableSearch].value);
+			}
+
+			else if(thisEnviroment->thisSymbol[tableSearch].kind == 2){
+
+				emit(STO, thisEnviroment->currentIndexRegister, thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
+			}
+			else{
+
+				error(11, ofp);
+				emit(SIO, 0, 0, 1);
+				tokenHolder = getToken(thisEnviroment);
+			}
+		break;
+		case(readsym):
+
+			tokenHolder = getToken(thisEnviroment);
+			if(tokenHolder != identsym){
+				error(4, ofp);
+			}
+
+
+			tableSearch = symbolTableSearch(tokenHolder.value);
+
+			if(thisEnviroment->thisSymbol[tableSearch].kind != 2){
+				error(11, ofp);
+			}
+			emit(SIO,thisEnviroment->currentIndexRegister ,0 , 1);
+			emit(STO,thisEnviroment->currentIndexRegister ,thisEnviroment->thisSymbol[tableSearch].level,thisEnviroment->thisSymbol[tableSearch].addr);
+			tokenHolder = getToken(thisEnviroment);
+
+			else{
+
+		        if(tokenHolder.type == periodsym){
+		            error(17 ofp,);
+		        }
+		        else if (tokenHolder.type != endsym) {
+		            error(7, ofp);
+		        }
+			}
+		break;
+
 	}
+
 }
 
 
