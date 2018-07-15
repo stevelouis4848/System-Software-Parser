@@ -376,7 +376,7 @@ void statement(enviroment *thisEnviroment, FILE *ofp){
 			tokenHolder = getToken(thisEnviroment);
 			statement(thisEnviroment, ofp);
 		break;
-		case(writesym)
+		case(writesym):
 
 			tokenHolder = getToken(thisEnviroment);
 			if(tokenHolder.type != identsym){
