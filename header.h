@@ -72,7 +72,7 @@ typedef struct enviroment{
 				int currentIndexSymbol;
 				int currentIndexRegister;
 				int currentIndexCode;
-				int numOfVatiables 
+				int numOfVatiables;
 
 }enviroment;
 							
@@ -103,7 +103,7 @@ void factor(enviroment *thisEnviroment, FILE *ofp);
 void error(int errorCode, FILE *ofp);
 void symbolTablePush(int type, enviroment *thisEnviroment);
 int symbolTableSearch(enviroment *thisEnviroment,char name[10]);
-void emit(enviroment *thisEnviroment, int op, int register, int level, int m)
+void emit(enviroment *thisEnviroment, int op, int register, int level, int m);
 /*				
 void scanner(char *fileName);
 void encoder(listyString* inputHead, FILE *ofp, FILE *ofp2);
