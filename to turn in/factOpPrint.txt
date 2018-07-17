@@ -1,0 +1,6 @@
+Factorial Op Printout:
+0 INC 0 0 0 
+1 LOD 4 0 6 
+2 LIT 5 0 56 
+3 STO 6 0 4 
+4 SIO 0 0 3 

@@ -124,7 +124,7 @@ void printStack(int printvalue,enviroment2 *env,int sp,int bp,int* stack,int l,F
 
 int main() {
 
-	//int i;
+	int i;
 
 	for (i = 1;i < argc; i++){
 

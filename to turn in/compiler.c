@@ -31,12 +31,10 @@ int i;
 		}
 		else{
            
-			printf("running programs\n");
 			scanner(argv[i]);
 			program();
 			vm();
 		}
 	}
-	printf("done\n");
 	return 0;
 }

@@ -561,7 +561,7 @@ void program(){
 	emit(thisEnviroment, SIO, 0,0,3);
 
 	fprintf(ofp,"parsed with no error\n");
-    if(vmPrint != 0){
+    if(parserPrint != 0){
         printf("parsed with no error\n");
     }
 
@@ -570,7 +570,7 @@ void program(){
 	//fprintf(ofp2,"OP\tR\tL\tM\n");
 
 
-	if(vmPrint != 0){
+	if(parserPrint != 0){
 
         printf("Parser Output/VM Input\nOP R L M\n");
 	}
