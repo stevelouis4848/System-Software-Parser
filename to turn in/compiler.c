@@ -8,7 +8,7 @@
 # include <string.h>
 # include"header.h"
 # include"lexical.c"
-# include"test.c"
+# include"hw3tc.c"
 # include"VM.c"
 
 int main( int argc, char **argv){
