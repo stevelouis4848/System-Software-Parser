@@ -9,10 +9,10 @@
 
 int main( int argc, char **argv){
 
-	int i;
+int i;
 
 	for (i = 1;i < argc; i++){
-		
+
 		if(strcmp(argv[i], "-l") == 0){
 			printf("-l print lexical\n");
 			lexicalPrint++;
@@ -26,10 +26,11 @@ int main( int argc, char **argv){
 			vmPrint++;
 		}
 		else{
+           
 			printf("running programs\n");
 			scanner(argv[i]);
 			program();
-			//vm();
+			vm();
 		}
 	}
 	printf("done\n");
