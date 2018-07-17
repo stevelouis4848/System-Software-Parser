@@ -344,7 +344,7 @@ void scanner(char *fileName){
 		remove("lexicalOutput.txt");
 		remove("parserInput.txt");
 
-		ifp = fopen("inputLexical.c","r");
+		ifp = fopen(fileName,"r");
 		ofp = fopen("lexicalOutput.txt","w");
 
 		ifp = fopen(fileName,"r");
